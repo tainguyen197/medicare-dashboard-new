@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Medicare Dashboard
 
-## Getting Started
+A modern, edge-first fullstack web application built with Next.js 15, Cloudflare Workers, Turso, and Cloudflare R2.
 
-First, run the development server:
+## 🛠️ Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 15 (App Router)**: Leveraging React Server Components, streaming, and edge support
+- **Cloudflare Workers (Edge API)**: Ultra-low-latency API responses at the edge
+- **Turso (Edge SQLite Database)**: Distributed SQLite database for globally consistent data access
+- **Drizzle ORM**: Type-safe database queries with Turso integration
+- **Cloudflare R2 (Object Storage)**: S3-compatible object storage with zero egress fees
+- **Tailwind CSS**: Utility-first CSS framework for responsive UI
+- **TypeScript**: Full-stack type safety
+
+## ✨ Key Features
+
+- ⚡ Edge API performance using Cloudflare Workers
+- 🔐 Authentication & sessions at the edge
+- 💾 Type-safe database queries using Drizzle ORM + Turso
+- 📁 Upload and serve files using R2 with signed URLs
+- 🎨 Responsive UI built with Tailwind CSS and custom components
+- 🌎 Globally distributed for real-time performance
+- 🚀 Server-side rendering with SEO best practices
+- 🌘 Dark mode support with smooth transitions
+- 🧱 Modular structure for scalable and maintainable codebase
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Turso CLI (for local development)
+- Wrangler CLI (for Cloudflare Workers development)
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/medicare-dashboard.git
+   cd medicare-dashboard
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Copy the environment variables file and fill in your values:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+4. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Environment Setup
+
+You'll need to set up:
+
+- A Turso database
+- Cloudflare Workers account
+- Cloudflare R2 bucket
+
+See the `.env.example` file for required variables.
+
+## 📁 Project Structure
+
+```
+/
+├── src/                      # Source directory
+│   ├── app/                  # Next.js App Router pages
+│   │   └── page.tsx          # Main page component
+│   ├── components/           # React components
+│   │   └── ui/               # UI components
+│   ├── db/                   # Database configuration
+│   │   ├── schema/           # Drizzle schema definitions
+│   │   └── migrations/       # Database migrations
+│   ├── worker/               # Cloudflare Worker code
+│   │   └── routes/           # API route handlers
+│   └── types/                # TypeScript type definitions
+├── public/                   # Static assets
+├── wrangler.toml             # Cloudflare Workers configuration
+└── drizzle.config.ts         # Drizzle ORM configuration
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔄 Database Migrations
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Generate and apply database migrations:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Generate migration
+npm run db:generate
 
-## Learn More
+# Apply migration
+npm run db:migrate
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🚢 Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Next.js Application
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deploy to Vercel:
 
-## Deploy on Vercel
+```bash
+npm run build
+vercel deploy --prod
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Cloudflare Workers
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploy to Cloudflare:
+
+```bash
+npm run deploy:worker
+```
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgements
+
+- [Next.js](https://nextjs.org/)
+- [Cloudflare Workers](https://workers.cloudflare.com/)
+- [Turso](https://turso.tech/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [Tailwind CSS](https://tailwindcss.com/)
