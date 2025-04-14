@@ -7,14 +7,39 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/Button";
 import { ChevronLeft } from "lucide-react";
+import RichTextEditor from "@/components/editor/RichTextEditor";
+import CategorySelector from "@/components/editor/CategorySelector";
+import HashtagSelector from "@/components/editor/HashtagSelector";
+import RelatedPostsSelector from "@/components/editor/RelatedPostsSelector";
+
+// Define interfaces for the blog data structure
+interface Hashtag {
+  id: string;
+  name: string;
+}
+
+interface RelatedPost {
+  id: string;
+  title: string;
+  isManuallySelected: boolean;
+}
 
 export default function EditBlogPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
   const [content, setContent] = useState("");
+  const [categoryId, setCategoryId] = useState<string | null>(null);
+  const [hashtagIds, setHashtagIds] = useState<string[]>([]);
+  const [relatedPostIds, setRelatedPostIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<{
+    title?: string;
+    content?: string;
+    category?: string;
+  }>({});
 
   // Fetch the blog data on component mount
   useEffect(() => {
@@ -28,7 +53,22 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
         }
 
         setTitle(data.data.title);
+        setShortDescription(data.data.shortDescription || "");
         setContent(data.data.content || "");
+        setCategoryId(data.data.categoryId);
+
+        // Extract hashtag IDs from the hashtags array
+        const extractedHashtagIds = data.data.hashtags.map(
+          (tag: Hashtag) => tag.id
+        );
+        setHashtagIds(extractedHashtagIds);
+
+        // Extract related post IDs from the relatedPosts array
+        const extractedRelatedPostIds = data.data.relatedPosts
+          .filter((post: RelatedPost) => post.isManuallySelected)
+          .map((post: RelatedPost) => post.id);
+        setRelatedPostIds(extractedRelatedPostIds);
+
         setIsLoading(false);
       } catch (err) {
         if (err instanceof Error) {
@@ -43,8 +83,32 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
     fetchBlog();
   }, [params.id]);
 
+  const validateForm = () => {
+    const errors: {
+      title?: string;
+      content?: string;
+      category?: string;
+    } = {};
+
+    if (!title.trim()) {
+      errors.title = "Title is required";
+    }
+
+    if (!content.trim()) {
+      errors.content = "Content is required";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSaving(true);
     setError(null);
 
@@ -54,7 +118,14 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({
+          title,
+          shortDescription,
+          content,
+          categoryId,
+          hashtagIds,
+          relatedPostIds,
+        }),
       });
 
       const data = await response.json();
@@ -84,7 +155,7 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
     <div>
       <div className="mb-6">
         <Link
-          href="/dashboard/blogs"
+          href="/blogs"
           className="text-indigo-600 hover:text-indigo-800 flex items-center text-sm mb-4"
         >
           <ChevronLeft className="h-4 w-4 mr-1" /> Back to Blogs
@@ -92,7 +163,7 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
         <h1 className="text-2xl font-bold tracking-tight">Edit Blog Post</h1>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 max-w-2xl">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 max-w-4xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
             <div
@@ -110,24 +181,61 @@ export default function EditBlogPage({ params }: { params: { id: string } }) {
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              required
               placeholder="Enter blog title"
+              className={`w-full ${formErrors.title ? "border-red-500" : ""}`}
+            />
+            {formErrors.title && (
+              <p className="text-red-500 text-sm">{formErrors.title}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="shortDescription">
+              Short Description (optional)
+            </Label>
+            <Input
+              id="shortDescription"
+              value={shortDescription}
+              onChange={(e) => setShortDescription(e.target.value)}
+              placeholder="Brief summary of your blog post"
               className="w-full"
+            />
+            <p className="text-sm text-gray-500">
+              This will be displayed in blog listings and search results
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CategorySelector
+              value={categoryId}
+              onChange={setCategoryId}
+              required={false}
+              allowCreate={true}
+              error={formErrors.category}
+            />
+
+            <HashtagSelector
+              value={hashtagIds}
+              onChange={setHashtagIds}
+              label="Hashtags"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="content">Content</Label>
-            <textarea
-              id="content"
+            <RichTextEditor
               value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows={12}
-              required
-              placeholder="Write your blog content here..."
-              className="w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              onChange={setContent}
+              error={formErrors.content}
             />
           </div>
+
+          <RelatedPostsSelector
+            value={relatedPostIds}
+            onChange={setRelatedPostIds}
+            label="Related Posts"
+            maxRelatedPosts={3}
+          />
 
           <div className="flex justify-end space-x-4">
             <Link href="/blogs">
