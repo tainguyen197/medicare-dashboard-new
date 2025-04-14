@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users } from "lucide-react";
+import { BookAIcon, Users } from "lucide-react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -42,6 +42,19 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               >
                 <Users className="w-5 h-5 mr-3" />
                 <span>User</span>
+              </Link>
+            </li>
+            <li className="list-none">
+              <Link
+                href="/blogs"
+                className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
+                  isActive("/dashboard/blogs")
+                    ? "text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-gray-700"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                }`}
+              >
+                <BookAIcon className="w-5 h-5 mr-3" />
+                <span>Blogs</span>
               </Link>
             </li>
           </nav>
