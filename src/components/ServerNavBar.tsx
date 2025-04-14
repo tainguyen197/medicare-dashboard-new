@@ -48,9 +48,19 @@ export function ServerNavBar({ currentPath }: ServerNavBarProps) {
               </Link>
             </li>
             <li>
-              <Link href="/logout" className="hover:underline">
-                Logout
+              <Link
+                href="/users/create"
+                className={`hover:underline ${
+                  isActive("/users/create") ? "font-medium" : ""
+                }`}
+              >
+                Create User
               </Link>
+            </li>
+            <li>
+              {/* <Link href="/logout" className="hover:underline">
+                Logout
+              </Link> */}
             </li>
           </ul>
         </nav>

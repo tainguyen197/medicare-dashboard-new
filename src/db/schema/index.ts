@@ -1,10 +1,14 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
+export const roles = ["owner", "admin", "editor"] as const;
+
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
   name: text("name"),
+  passwordHash: text("password_hash"),
+  role: text("role", { enum: roles }).notNull().default("editor"),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
