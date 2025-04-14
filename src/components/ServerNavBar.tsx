@@ -6,61 +6,31 @@ interface ServerNavBarProps {
 
 export function ServerNavBar({ currentPath }: ServerNavBarProps) {
   const isActive = (path: string) => {
-    return currentPath === path;
+    return currentPath.startsWith(path);
   };
 
   return (
-    <header className="bg-blue-600 dark:bg-blue-800 text-white shadow-md">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold">
-          Medicare Dashboard
+    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <Link
+          href="/"
+          className="text-xl font-semibold text-gray-800 dark:text-white"
+        >
+          Admin Dashboard
         </Link>
         <nav>
-          <ul className="flex space-x-4">
+          <ul className="flex space-x-6">
             <li>
               <Link
-                href="/dashboard"
-                className={`hover:underline ${
-                  isActive("/dashboard") ? "font-medium" : ""
+                href="/users"
+                className={`text-sm font-medium transition-colors ${
+                  isActive("/users")
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                 }`}
               >
-                Dashboard
+                Users
               </Link>
-            </li>
-            <li>
-              <Link
-                href="/patients"
-                className={`hover:underline ${
-                  isActive("/patients") ? "font-medium" : ""
-                }`}
-              >
-                Patients
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/claims"
-                className={`hover:underline ${
-                  isActive("/claims") ? "font-medium" : ""
-                }`}
-              >
-                Claims
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/users/create"
-                className={`hover:underline ${
-                  isActive("/users/create") ? "font-medium" : ""
-                }`}
-              >
-                Create User
-              </Link>
-            </li>
-            <li>
-              {/* <Link href="/logout" className="hover:underline">
-                Logout
-              </Link> */}
             </li>
           </ul>
         </nav>
