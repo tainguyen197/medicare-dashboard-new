@@ -32,6 +32,18 @@ export function ServerNavBar({ currentPath }: ServerNavBarProps) {
                 Users
               </Link>
             </li>
+            <li>
+              <Link
+                href="/blogs"
+                className={`text-sm font-medium transition-colors ${
+                  isActive("/users")
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                }`}
+              >
+                Blogs
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <Link
                 href="/users"
                 className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-                  isActive("/dashboard/users")
+                  isActive("/users")
                     ? "text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-gray-700"
                     : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                 }`}
@@ -48,7 +48,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <Link
                 href="/blogs"
                 className={`flex items-center px-4 py-3 text-sm font-medium rounded-md transition-colors ${
-                  isActive("/dashboard/blogs")
+                  isActive("/blogs")
                     ? "text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-gray-700"
                     : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                 }`}
